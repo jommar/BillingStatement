@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Billing Statement</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.6.3/dist/vuetify.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="app" class="page">
+    <v-app>
+      <v-container>
+        <v-card class="mb-4 d-print-none">
+          <v-card-text>
+            <div>
+              <v-text-field v-model="params" v-bind="attrs" label="URL Params"></v-text-field>
+              <v-btn color="primary" small @click="setUrlParams">
+                Submit
+              </v-btn>
+              <v-btn color="primary" small @click="window.print()">
+                Print
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <v-card class="elevation-0">
+          <v-card-text>
+            <section class="mb-8">
+              <div class="text-h6">
+                Billing Statement Date: <b>{{ form.billingStatementDate }}</b>
+              </div>
+            </section>
+            <section class="mb-8">
+              <div class="text-h6">
+                Tenant Information
+              </div>
+              <v-row><v-col cols="6" class="font-weight-bold">
+                  Tenant Name: {{ form.tenantName }}
+                </v-col><v-col cols="6" class="font-weight-bold">
+                  Apartment Number: {{ form.apartmentNumber }}
+                </v-col>
+              </v-row>
+            </section>
+            <section class="mb-8">
+              <div class="text-h6">
+                Charges
+              </div>
+              <v-row>
+                <v-col cols="3" class="font-weight-bold">
+                  <div>Previous Balance:</div>
+                  <div>{{ parseFloat(form.previousBalance).toFixed(2) }}</div>
+                </v-col>
+                <v-col cols="3" class="font-weight-bold">
+                  <div>Monthly Rent:</div>
+                  <div>{{ parseFloat(form.monthlyRent).toFixed(2) }}</div>
+                </v-col>
+                <v-col cols="3" class="font-weight-bold">
+                  <div>Water Bill:</div>
+                  <div>{{ parseFloat(form.waterBill).toFixed(2) }}</div>
+                </v-col>
+                <v-col cols="3" class="font-weight-bold">
+                  <div>Total Amount Due:</div>
+                  <div>{{ parseFloat(form.totalAmountDue).toFixed(2) }}</div>
+                </v-col>
+              </v-row>
+            </section>
+            <section class="mb-8">
+              <p>Please make payment on or before <b>{{ form.dueDate }}</b> to avoid late fees.</p>
+              <p>If you have any questions regarding this billing statement, please contact us at <b>{{
+                  form.contactInformation }}</b>.</p>
+              <p>Thank you for your prompt payment.</p>
+            </section>
+            <section>
+              <v-row>
+                <v-col class="text-center" cols="3" v-for="(payment,index) in payments" :key="index">
+                  <v-card>
+                    <v-card-text>
+                      <div class="font-weight-bold mb-2">{{payment.type}}</div>
+                      <div>{{payment.accountNo}}</div>
+                      <div>{{payment.accountName}}</div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </section>
+          </v-card-text>
+        </v-card>
+      </v-container>
+    </v-app>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/vue-router@3.5.2/dist/vue-router.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.6.3/dist/vuetify.min.js"></script>
+  <script>
+    const router = new VueRouter({
+      mode: 'history',
+      routes: []
+    });
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      router,
+      data: {
+        message: '',
+        attrs: {
+          outlined: true,
+          dense: true
+        },
+        params: null,
+        payments: [
+          { accountNo: '09228868650', accountName: 'Jommar Ilagan', type: 'GCash' }
+        ],
+        form: {
+          apartmentName: null,
+          apartmentAddress: null,
+          billingStatementDate: null,
+          tenantName: null,
+          apartmentNumber: null,
+          previousBalance: null,
+          monthlyRent: null,
+          waterBill: null,
+          totalAmountDue: null,
+          dueDate: null,
+          contactInformation: null,
+        }
+      },
+      methods: {
+        setUrlParams() {
+          const url = `${this.$route.path}${this.params}`
+          window.location.href = url
+        }
+      },
+      created() {
+        this.form.apartmentName = this.$route.query.apartmentName
+        this.form.apartmentAddress = this.$route.query.apartmentAddress
+        this.form.billingStatementDate = this.$route.query.billingStatementDate
+        this.form.tenantName = this.$route.query.tenantName
+        this.form.apartmentNumber = this.$route.query.apartmentNumber
+        this.form.previousBalance = this.$route.query.previousBalance
+        this.form.monthlyRent = this.$route.query.monthlyRent
+        this.form.waterBill = this.$route.query.waterBill
+        this.form.totalAmountDue = this.$route.query.totalAmountDue
+        this.form.dueDate = this.$route.query.dueDate
+        this.form.contactInformation = this.$route.query.contactInformation
+      }
+    })
+  </script>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    .page {
+      width: 210mm;
+      height: 148.5mm;
+      margin: auto;
+    }
+  </style>
+</body>
+
+</html>
